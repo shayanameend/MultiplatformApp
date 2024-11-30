@@ -1,5 +1,7 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
@@ -15,16 +17,10 @@ plugins {
 
 kotlin {
   jvmToolchain(17)
+
   androidTarget {
-    //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-  }
-
-  jvm()
-
-  wasmJs {
-    browser()
-    binaries.executable()
   }
 
   listOf(
@@ -38,11 +34,20 @@ kotlin {
     }
   }
 
+  jvm()
+
+  @OptIn(ExperimentalWasmDsl::class)
+  wasmJs {
+    browser()
+    binaries.executable()
+  }
+
   sourceSets {
     commonMain.dependencies {
       implementation(compose.runtime)
       implementation(compose.foundation)
       implementation(compose.material3)
+      implementation(compose.materialIconsExtended)
       implementation(compose.components.resources)
       implementation(compose.components.uiToolingPreview)
       implementation(libs.kermit)
@@ -81,18 +86,17 @@ kotlin {
       implementation(libs.sqlDelight.driver.android)
     }
 
+    iosMain.dependencies {
+      implementation(libs.ktor.client.darwin)
+      implementation(libs.sqlDelight.driver.native)
+    }
+
     jvmMain.dependencies {
       implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
       implementation(libs.ktor.client.okhttp)
       implementation(libs.sqlDelight.driver.sqlite)
     }
-
-    iosMain.dependencies {
-      implementation(libs.ktor.client.darwin)
-      implementation(libs.sqlDelight.driver.native)
-    }
-
   }
 }
 
@@ -112,7 +116,6 @@ android {
   }
 }
 
-//https://developer.android.com/develop/ui/compose/testing#setup
 dependencies {
   androidTestImplementation(libs.androidx.uitest.junit4)
   debugImplementation(libs.androidx.uitest.testManifest)
@@ -141,16 +144,11 @@ compose.desktop {
   }
 }
 
-buildConfig {
-  // BuildConfig configuration here.
-  // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
-}
+buildConfig {}
 
 sqldelight {
   databases {
     create("MyDatabase") {
-      // Database configuration here.
-      // https://cashapp.github.io/sqldelight
       packageName.set("com.zedsols.multiplatformapp.db")
     }
   }
@@ -158,8 +156,6 @@ sqldelight {
 
 apollo {
   service("api") {
-    // GraphQL configuration here.
-    // https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/
     packageName.set("com.zedsols.multiplatformapp.graphql")
   }
 }
