@@ -89,6 +89,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
+internal val LocalCycloneIsRotating = compositionLocalOf { mutableStateOf(false) }
 
 @Composable
 internal fun AppTheme(
@@ -96,9 +97,11 @@ internal fun AppTheme(
 ) {
   val systemIsDark = isSystemInDarkTheme()
   val isDarkState = remember(systemIsDark) { mutableStateOf(systemIsDark) }
+  val isRotating = remember { mutableStateOf(false) }
 
   CompositionLocalProvider(
-    LocalThemeIsDark provides isDarkState
+    LocalThemeIsDark provides isDarkState,
+    LocalCycloneIsRotating provides isRotating
   ) {
     val isDark by isDarkState
     val colorScheme = if (isDark) DarkColorScheme else LightColorScheme

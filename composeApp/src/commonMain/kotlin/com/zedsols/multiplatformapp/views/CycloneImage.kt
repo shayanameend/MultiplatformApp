@@ -9,26 +9,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import com.zedsols.multiplatformapp.theme.LocalCycloneIsRotating
 import kotlinx.coroutines.isActive
 import multiplatformapp.composeapp.generated.resources.Res
 import multiplatformapp.composeapp.generated.resources.ic_cyclone
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun CycloneImage(
-  modifier: Modifier = Modifier,
-  isRotating: MutableState<Boolean>
-) {
+fun CycloneImage(modifier: Modifier = Modifier) {
   val target = 360f
   val rotate = remember { Animatable(0f) }
+  val isRotating by LocalCycloneIsRotating.current
 
-  if (isRotating.value) {
+  if (isRotating) {
     LaunchedEffect(Unit) {
       while (isActive) {
         val remaining = (target - rotate.value) / target
