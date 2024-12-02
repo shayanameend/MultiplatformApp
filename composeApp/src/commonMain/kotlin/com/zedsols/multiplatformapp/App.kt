@@ -11,11 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.zedsols.multiplatformapp.theme.AppTheme
-import com.zedsols.multiplatformapp.views.CTAButton
-import com.zedsols.multiplatformapp.views.CycloneImage
-import com.zedsols.multiplatformapp.views.CycloneTitle
-import com.zedsols.multiplatformapp.views.RotateButton
-import com.zedsols.multiplatformapp.views.ThemeButton
 
 @Composable
 internal fun App() = AppTheme {
@@ -25,11 +20,5 @@ internal fun App() = AppTheme {
       .windowInsetsPadding(WindowInsets.safeDrawing)
       .padding(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-    CycloneTitle()
-    CycloneImage()
-    RotateButton()
-    ThemeButton()
-    CTAButton()
-  }
+  ) {}
 }
