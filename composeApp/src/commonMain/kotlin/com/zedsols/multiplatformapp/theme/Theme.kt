@@ -111,7 +111,6 @@ internal fun AppTheme(
     MaterialTheme(colorScheme = colorScheme) {
       Surface(content = content)
     }
-
   }
 }
 

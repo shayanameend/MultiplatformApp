@@ -1,7 +1,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
@@ -13,6 +12,11 @@ plugins {
   alias(libs.plugins.sqlDelight)
   alias(libs.plugins.apollo)
   alias(libs.plugins.buildConfig)
+}
+
+dependencies {
+  androidTestImplementation(libs.androidx.uitest.junit4)
+  debugImplementation(libs.androidx.uitest.testManifest)
 }
 
 kotlin {
@@ -35,12 +39,6 @@ kotlin {
   }
 
   jvm()
-
-  @OptIn(ExperimentalWasmDsl::class)
-  wasmJs {
-    browser()
-    binaries.executable()
-  }
 
   sourceSets {
     commonMain.dependencies {
@@ -116,11 +114,6 @@ android {
   }
 }
 
-dependencies {
-  androidTestImplementation(libs.androidx.uitest.junit4)
-  debugImplementation(libs.androidx.uitest.testManifest)
-}
-
 compose.desktop {
   application {
     mainClass = "MainKt"
@@ -130,15 +123,15 @@ compose.desktop {
       packageName = "MultiplatformApp"
       packageVersion = "1.0.0"
 
+      macOS {
+        bundleID = "com.zedsols.multiplatformapp.desktopApp"
+        iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
+      }
       linux {
         iconFile.set(project.file("desktopAppIcons/LinuxIcon.png"))
       }
       windows {
         iconFile.set(project.file("desktopAppIcons/WindowsIcon.ico"))
-      }
-      macOS {
-        iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
-        bundleID = "com.zedsols.multiplatformapp.desktopApp"
       }
     }
   }
@@ -146,16 +139,16 @@ compose.desktop {
 
 buildConfig {}
 
+apollo {
+  service("api") {
+    packageName.set("com.zedsols.multiplatformapp.graphql")
+  }
+}
+
 sqldelight {
   databases {
     create("MyDatabase") {
       packageName.set("com.zedsols.multiplatformapp.db")
     }
-  }
-}
-
-apollo {
-  service("api") {
-    packageName.set("com.zedsols.multiplatformapp.graphql")
   }
 }
